@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>20 Newsgroups IR System</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <!-- Chart.js for PR curve -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ──────────── HEADER ──────────── -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-left">
+      <span class="header-logo">📰</span>
+      <div>
+        <h1>20 Newsgroups IR System</h1>
+        <p class="header-sub">Project 17 · Information Retrieval · TF-IDF · BM25 · SBERT · Hybrid RRF</p>
+      </div>
+    </div>
+    <div id="status-badge" class="badge badge-loading">● Loading index …</div>
+  </div>
+</header>
+
+<!-- ──────────── MAIN LAYOUT ──────────── -->
+<main class="container">
+
+  <!-- ── Search Card ── -->
+  <section class="card search-card">
+    <h2 class="card-title">🔍 Search Newsgroups</h2>
+    <form id="search-form" class="search-form">
+      <div class="form-row">
+        <input
+          id="query-input"
+          name="query"
+          type="text"
+          class="query-input"
+          placeholder="Enter search query (e.g. 'encryption algorithms', 'baseball scores') …"
+          required
+          autocomplete="off"
+        />
+        <button type="submit" class="btn btn-primary" id="search-btn">Search</button>
+      </div>
+
+      <div class="form-options">
+        <div class="option-group">
+          <label>Ranking Algorithm</label>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="method" value="rrf" checked /> Hybrid RRF</label>
+            <label class="radio-label"><input type="radio" name="method" value="tfidf" /> TF-IDF</label>
+            <label class="radio-label"><input type="radio" name="method" value="bm25" /> BM25</label>
+            <label class="radio-label"><input type="radio" name="method" value="sbert" /> Sentence Transformer</label>
+          </div>
+        </div>
+
+        <div class="option-group">
+          <label for="top-k">Results (Top-K)</label>
+          <select id="top-k" name="top_k">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+
+        <div class="option-group">
+          <label for="category-filter">Filter Category</label>
+          <select id="category-filter" name="category_filter">
+            <option value="">— All categories —</option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <!-- ── Results + Metrics ── -->
+  <div class="results-layout" id="results-section" style="display:none">
+
+    <!-- LEFT: Results -->
+    <section class="card results-card">
+      <h2 class="card-title">📄 Results</h2>
+      <div id="results-info" class="results-info"></div>
+      <div id="results-list"></div>
+    </section>
+
+    <!-- RIGHT: Metrics + PR Curve -->
+    <aside class="metrics-panel">
+
+      <!-- Performance Table -->
+      <section class="card metrics-card">
+        <h2 class="card-title">📊 Performance Comparison</h2>
+        <div class="table-scroll">
+          <table id="metrics-table" class="metrics-table">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>P@K</th>
+                <th>R@K</th>
+                <th>MAP</th>
+                <th>nDCG</th>
+              </tr>
+            </thead>
+            <tbody id="metrics-tbody"></tbody>
+          </table>
+        </div>
+        <p class="metrics-note">Evaluated against same-category docs as ground truth.</p>
+      </section>
+
+      <!-- PR Curve -->
+      <section class="card pr-card">
+        <h2 class="card-title">📈 Precision–Recall Curve</h2>
+        <div class="chart-wrap">
+          <canvas id="pr-chart"></canvas>
+        </div>
+      </section>
+
+    </aside>
+  </div>
+
+  <!-- Loading overlay -->
+  <div id="loading-overlay" class="loading-overlay" style="display:none">
+    <div class="spinner"></div>
+    <p>Searching …</p>
+  </div>
+
+</main>
+
+<!-- ──────────── FOOTER ──────────── -->
+<footer class="site-footer">
+  <p>Learning Outcomes: <strong>Text Filtering · Topic Category Indexing · Hybrid RRF</strong> &nbsp;|&nbsp; Dataset: 20 Newsgroups (18,000 posts · 20 topics)</p>
+</footer>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
